@@ -1,0 +1,39 @@
+/* Estilos para el contenedor del componente Inicio */
+.inicio-container {
+    padding: 20px;
+    background: #ECE9E6;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #FFFFFF, #ECE9E6);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #FFFFFF, #ECE9E6);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    border-radius: 5px;
+    margin: 20px auto;
+}
+
+
+/* Establece el estilo global de la página de inicio */
+.inicio-container {
+    /* Asumiendo que tienes una imagen en tu proyecto en la ruta 'src/assets/background.jpg' */
+    background-image: url('');
+    background-size: cover;
+    background-position: center;
+    color: black;
+    /* Cambia este color según el diseño */
+}
+
+/* Personaliza la tipografía */
+h2,
+p {
+    font-family: 'Arial', sans-serif;
+    /* Cambia a la fuente que prefieras */
+    text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.133);
+    /* Sombra de texto para mejorar la legibilidad */
+}
+
+/* Personaliza botones, si es necesario */
+.btn-primary {
+    background-color: #0044cc;
+    /* Cambia el color según tu diseño */
+    border: none;
+}
