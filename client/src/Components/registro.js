@@ -1,27 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import Axios from "axios";
-import { Container, Card, Form, Button, Row, Col } from 'react-bootstrap';
-import './registro.css';
+import { Container, Card, Form, Button, Row, Col } from "react-bootstrap";
+import "./registro.css";
+
+import MyCalendar from "./MyCalendar";
 
 const Registro = () => {
   const [formValues, setFormValues] = useState({
-    apellidoPaterno: '',
-    apellidoMaterno: '',
-    nombres: '',
-    genero: '',
-    folioPago: '',
-    carrera: '',
-    numControl: '',
-    semestre: '',
-    email: '',
-    telefono: '',
+    apellidoPaterno: "",
+    apellidoMaterno: "",
+    nombres: "",
+    genero: "",
+    folioPago: "",
+    carrera: "",
+    numControl: "",
+    semestre: "",
+    email: "",
+    telefono: "",
+    fechaExamen: null,
   });
 
-  const [emailError, setEmailError] = useState('');
-  
-  
+  const [emailError, setEmailError] = useState("");
+
   const add = () => {
-    Axios.post("http://localhost:3001/create", {
+    Axios.post("http://localhost:3307/create", {
       apellidoPaterno: formValues.apellidoPaterno,
       apellidoMaterno: formValues.apellidoMaterno,
       nombres: formValues.nombres,
@@ -32,50 +34,56 @@ const Registro = () => {
       semestre: formValues.semestre,
       email: formValues.email,
       telefono: formValues.telefono,
+      fechaExamen: formValues.fechaExamen,
     })
-    .then((response) => {
-      alert("Estudiante registrado");
-    })
-    .catch((error) => {
-     alert(error);
-    });
+      .then((response) => {
+        alert("Estudiante registrado");
+      })
+      .catch((error) => {
+        alert(error);
+      });
   };
-  
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     let newValue = value;
 
     switch (id) {
-      case 'apellidoPaterno':
-      case 'apellidoMaterno':
-      case 'nombres':
+      case "apellidoPaterno":
+      case "apellidoMaterno":
+      case "nombres":
         newValue = value.toUpperCase().replace(/[^A-Z\sÑ]/g, "");
         break;
-      case 'numControl':
-        newValue = value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 9);
+      case "numControl":
+        newValue = value
+          .toUpperCase()
+          .replace(/[^A-Z0-9]/g, "")
+          .slice(0, 9);
         break;
-      case 'semestre':
+      case "semestre":
         newValue = value.replace(/\D/g, "").slice(0, 2);
         break;
-      case 'telefono':
+      case "telefono":
         newValue = value.replace(/\D/g, "").slice(0, 10);
         break;
       default:
         break;
     }
 
-    setFormValues(prevState => ({
+    setFormValues((prevState) => ({
       ...prevState,
-      [id]: newValue
+      [id]: newValue,
     }));
   };
 
   const handleEmailBlur = (e) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(e.target.value)) {
-      setEmailError("Por favor, introduzca una dirección de correo electrónico válida.");
+      setEmailError(
+        "Por favor, introduzca una dirección de correo electrónico válida."
+      );
     } else {
-      setEmailError('');
+      setEmailError("");
     }
   };
 
@@ -134,7 +142,11 @@ const Registro = () => {
                 <Col md={6}>
                   <Form.Group controlId="genero">
                     <Form.Label>Género:</Form.Label>
-                    <Form.Control as="select" value={formValues.genero} onChange={handleInputChange}>
+                    <Form.Control
+                      as="select"
+                      value={formValues.genero}
+                      onChange={handleInputChange}
+                    >
                       <option value="">Selecciona</option>
                       <option value="masculino">Masculino</option>
                       <option value="femenino">Femenino</option>
@@ -163,29 +175,48 @@ const Registro = () => {
                 <Col md={6}>
                   <Form.Group controlId="carrera">
                     <Form.Label>Carrera:</Form.Label>
-                    <Form.Control as="select" value={formValues.carrera} onChange={handleInputChange}>
+                    <Form.Control
+                      as="select"
+                      value={formValues.carrera}
+                      onChange={handleInputChange}
+                    >
                       <option value="">Selecciona</option>
                       <option value="Arquitectura">Arquitectura</option>
-                      <option value="Lic. en Administración">Lic. en Administración</option>
+                      <option value="Lic. en Administración">
+                        Lic. en Administración
+                      </option>
                       <option value="Contador Público">Contador Público</option>
                       <option value="Ing. Ambiental">Ing. Ambiental</option>
                       <option value="Ing. Biomédica">Ing. Biomédica</option>
                       <option value="Ing. Civil">Ing. Civil</option>
-                      <option value="Ing. en Diseño Industrial">Ing. en Diseño Industrial</option>
+                      <option value="Ing. en Diseño Industrial">
+                        Ing. en Diseño Industrial
+                      </option>
                       <option value="Ing. Electrónica">Ing. Electrónica</option>
-                      <option value="Ing. en Gestión Empresarial">Ing. en Gestión Empresarial</option>
-                      <option value="Ing. en Logística">Ing. en Logística</option>
-                      <option value="Ing. en Nanotecnología">Ing. en Nanotecnología</option>
+                      <option value="Ing. en Gestión Empresarial">
+                        Ing. en Gestión Empresarial
+                      </option>
+                      <option value="Ing. en Logística">
+                        Ing. en Logística
+                      </option>
+                      <option value="Ing. en Nanotecnología">
+                        Ing. en Nanotecnología
+                      </option>
                       <option value="Ing. Química">Ing. Química</option>
                       <option value="Ing. Aeronáutica">Ing. Aeronáutica</option>
                       <option value="Ing. Bioquímica">Ing. Bioquímica</option>
-                      <option value="Ing. Electromecánica">Ing. Electromecánica</option>
+                      <option value="Ing. Electromecánica">
+                        Ing. Electromecánica
+                      </option>
                       <option value="Ing. Informática">Ing. Informática</option>
-                      <option value="Ing. en Sistemas Computacionales">Ing. en Sistemas Computacionales</option>
-                      <option value="Ing. en Tecnologías de la Información y Comunicaciones">Ing. en Tecnologías de la Información y Comunicaciones</option>
+                      <option value="Ing. en Sistemas Computacionales">
+                        Ing. en Sistemas Computacionales
+                      </option>
+                      <option value="Ing. en Tecnologías de la Información y Comunicaciones">
+                        Ing. en Tecnologías de la Información y Comunicaciones
+                      </option>
                       <option value="Ing. Industrial">Ing. Industrial</option>
                       <option value="Ing. Mecánica">Ing. Mecánica</option>
-
                     </Form.Control>
                   </Form.Group>
                 </Col>
@@ -211,6 +242,24 @@ const Registro = () => {
                       placeholder="Semestre"
                       value={formValues.semestre}
                       onChange={handleInputChange}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              {/* Fecha de examen */}
+              <h5>Fecha de examen</h5>
+              <Row>
+                <Col md={6}>
+                  <Form.Group controlId="fechaExamen">
+                    <Form.Label>Fecha de Examen:</Form.Label>
+                    <MyCalendar
+                      selected={formValues.fechaExamen}
+                      onChange={(date) =>
+                        setFormValues((prevState) => ({
+                          ...prevState,
+                          fechaExamen: date,
+                        }))
+                      } // Actualizar el estado de la fecha de examen
                     />
                   </Form.Group>
                 </Col>
@@ -249,7 +298,9 @@ const Registro = () => {
               </Row>
 
               <div className="text-center mt-4">
-                <Button variant="primary" type="submit" onClick={add}>Enviar</Button>
+                <Button variant="primary" type="submit" onClick={add}>
+                  Enviar
+                </Button>
               </div>
             </Form>
           </Card.Body>
@@ -260,5 +311,3 @@ const Registro = () => {
 };
 
 export default Registro;
-
-

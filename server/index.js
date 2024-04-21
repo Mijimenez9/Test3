@@ -5,12 +5,14 @@ const cors= require("cors");
 
 
 app.use(cors());
-
+app.use(express.json());
 const db = mysql.createConnection({
     host:"localhost",
+   
     user:"root",
     password:"@Osc4r4rz4t3",
     database:"sistemas_lenguas_extranjeras"
+   
 });
 
 app.post("/create",(req,res)=>{
@@ -35,8 +37,37 @@ app.post("/create",(req,res)=>{
 );
 });
 
-app.listen(3001,()=>{
-    console.log("Corriendo en el puerto 3001")
+app.get("/examDates", (req, res) => {
+    db.query('SELECT fecha_examen FROM Examen', (err, result) => {
+        if (err) {
+            console.error("Error al obtener fechas de examen:", err);
+            res.status(500).send("Error al obtener fechas de examen");
+        } else {
+            const examDates = result.map(row => row.fecha_examen); // Corregir aquí
+            res.json(examDates);
+        }
+    });
+});
+app.get("/examTimes", (req, res) => {
+    const selectedDate = req.query.date; // Obtener la fecha seleccionada del query string
+    if (!selectedDate) {
+        return res.status(400).send("La fecha no ha sido proporcionada");
+    }
+
+    db.query('SELECT hora_examen FROM Examen WHERE fecha_examen = ?', selectedDate, (err, result) => {
+        if (err) {
+            console.error("Error al obtener los horarios de examen para la fecha seleccionada:", err);
+            return res.status(500).send("Error al obtener los horarios de examen para la fecha seleccionada");
+        } else {
+            const examTimes = result.map(row => row.hora_examen);
+            return res.json(examTimes);
+        }
+    });
+});
+
+
+app.listen(3307,()=>{
+    console.log("Corriendo en el puerto 3307")
 
 
 

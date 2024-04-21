@@ -1,0 +1,71 @@
+/* CalendarStyles.css */
+.calendar-popup {
+  position: absolute; /* Posicionamiento relativo al campo de entrada */
+  top: 100%; /* Coloca el calendario debajo del campo de entrada */
+  left: 0; /* Alinea el calendario con el borde izquierdo del campo de entrada */
+  z-index: 100; /* Asegura que el calendario se coloque sobre otros elementos */
+  display: none; /* Oculta el calendario por defecto */
+}
+.calendar {
+    width: 300px;
+    margin: 0 auto;
+    border: 1px solid #c21616;
+    padding: 10px;
+  }
+  
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+  }
+  
+  .calendar-prev-button,
+  .calendar-next-button {
+    background: #eee;
+    border: 1px solid #ccc;
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  .calendar-month-dropdown {
+    padding: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .calendar-body {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+  }
+  
+  .calendar-day {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+  
+  .calendar-day:hover {
+    background: #eee;
+  }
+  
+  .calendar-day.selected {
+    background: #007bff;
+    color: #fff;
+  }
+  
+  @media (max-width: 768px) {
+    .calendar {
+      width: 90%;
+    }
+}
+
+
+  
+ 
+  
+  .Form.Control:focus + .calendar-popup { /* Muestra el calendario al hacer clic */
+    display: block;
+  }
