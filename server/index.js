@@ -15,28 +15,36 @@ const db = mysql.createConnection({
    
 });
 
-app.post("/create",(req,res)=>{
-    const nombre= req.body.nombre;
-    const apellidoMaterno= req.body.apellidoMaterno;
-    const apellidoPaterno= req.body.apellidoPaterno;
-    const numControl= req.body.numControl;
-    const carrera= req.body.carrera;
-    const genero= req.body.genero;
-    const semestre= req.body.semestre;
-    const correo= req.body.correo;
-    const telefono= req.body.telefono;
-
-    db.query('INSERT INTO estudiante(nombre,apellido_paterno,apellido_materno,numero_control,carrera,correo_electronico,telefono,sexo) VALUES(?,?.?,?,?,?,?,?,?)',[nombre,apellidoPaterno,apellidoMaterno,numControl,carrera,genero,semestre,correo,telefono],
-    (err,result)=>{
-        if(err){
-            console.log(err);
-        }else{
-            res.send("Estudiante Registrado con exito");
+app.post("/create", (req, res) => {
+    const { nombres, apellidoMaterno, apellidoPaterno, numControl, carrera, genero, email, telefono, fechaExamen, horaExamen } = req.body;
+  
+    db.query('INSERT INTO Estudiante(nombre, apellido_paterno, apellido_materno, numero_control, carrera, correo_electronico, telefono, sexo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [nombres, apellidoPaterno, apellidoMaterno, numControl, carrera, email, telefono, genero],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send("Error al registrar estudiante");
+        } else {
+          // Lógica para manejar la inserción exitosa
         }
-    }
-);
-});
-
+      }
+    );
+  });
+  app.post("/createCita", (req, res) => {
+    const { id_estudiante, id_examen, fechaExamen, horaExamen, folioPago } = req.body;
+  
+    db.query('INSERT INTO Cita(numero_control, id_examen, fechaExamen, horaExamen, folioPago, estatus) VALUES (?, ?, ?, ?, ?, ?)',
+      [id_estudiante, id_examen, fechaExamen, horaExamen, folioPago, 'ACTIVO'], // Suponiendo que el estatus siempre es 'ACTIVO' al crear una cita
+      (err, result) => {
+        if (err) {
+          console.error("Error al registrar cita:", err);
+          res.status(500).send("Error al registrar cita");
+        } else {
+          res.status(200).send("Cita registrada correctamente");
+        }
+      }
+    );
+  });
 app.get("/examDates", (req, res) => {
     db.query('SELECT fecha_examen FROM Examen', (err, result) => {
         if (err) {
@@ -64,7 +72,26 @@ app.get("/examTimes", (req, res) => {
         }
     });
 });
+app.get("/getExamenId", (req, res) => {
+    const fechaExamen = req.query.fecha;
+    const horaExamen = req.query.hora;
 
+    db.query('SELECT id_examen FROM Examen WHERE fecha_examen = ? AND hora_examen = ?',
+      [fechaExamen, horaExamen],
+      (err, result) => {
+        if (err) {
+          console.error("Error al obtener ID de examen:", err);
+          res.status(500).send("Error al obtener ID de examen");
+        } else {
+          if (result.length > 0) {
+            res.status(200).json(result[0]);
+          } else {
+            res.status(404).send("No se encontró ningún examen para la fecha y hora especificadas");
+          }
+        }
+      }
+    );
+});
 
 app.listen(3307,()=>{
     console.log("Corriendo en el puerto 3307")
