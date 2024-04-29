@@ -19,7 +19,7 @@ const NavBar = () => {
                             <NavLink to='/Registro' className="nav-link">Agendar</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink to='/Inicio' className="nav-link">Login</NavLink>
+                            <NavLink to='/LoginScreen' className="nav-link">Login</NavLink>
                         </li>
                     </ul>
                 </div>

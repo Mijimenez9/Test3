@@ -14,8 +14,7 @@
 
 /* Establece el estilo global de la página de inicio */
 .inicio-container {
-    /* Asumiendo que tienes una imagen en tu proyecto en la ruta 'src/assets/background.jpg' */
-    background-image: url('');
+
     background-size: cover;
     background-position: center;
     color: black;

@@ -43,8 +43,8 @@ const Registro = () => {
       folioPago : formValues.folioPago,
     })
     .then((response) => {
-      const estudianteId = response.data.id; // Obtener el ID del estudiante recién insertado
-  
+      
+      //
       // Obtener el ID del examen correspondiente a la fecha y hora seleccionadas
       Axios.get(`http://localhost:3307/getExamenId?fecha=${formValues.fechaExamen}&hora=${formValues.horaExamen}`)
         .then((response) => {
