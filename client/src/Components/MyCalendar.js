@@ -4,15 +4,15 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./CalendarStyles.css";
 
-const MyCalendar = ({ onDateChange, selectedDate, selectedTime, onTimeChange }) => {
+const MyCalendar = ({ onDateChange, selectedDate }) => {
   const [availableDates, setAvailableDates] = useState([]);
   const [availableTimes, setAvailableTimes] = useState([]);
 
   useEffect(() => {
-    // Obtener fechas disponibles al cargar el componente
+    // Aquí realizas la solicitud para obtener las fechas disponibles de la base de datos
     Axios.get("http://localhost:3307/examDates")
       .then((response) => {
-        setAvailableDates(response.data);
+        setAvailableDates(response.data); // Suponiendo que response.data es un array de fechas disponibles
       })
       .catch((error) => {
         console.error("Error al obtener las fechas disponibles:", error);
@@ -20,32 +20,30 @@ const MyCalendar = ({ onDateChange, selectedDate, selectedTime, onTimeChange }) 
   }, []);
 
   useEffect(() => {
-    // Obtener horas disponibles cuando se selecciona una fecha
     if (selectedDate) {
-      const formattedDate = selectedDate.toISOString().split('T')[0];
+      // Aquí realizas la solicitud para obtener los horarios de examen para la fecha seleccionada
+      const formattedDate = selectedDate.toISOString().split('T')[0]; // Formatear la fecha como YYYY-MM-DD
       Axios.get(`http://localhost:3307/examTimes?date=${formattedDate}`)
         .then((response) => {
-          setAvailableTimes(response.data);
+          setAvailableTimes(response.data); // Suponiendo que response.data es un array de horarios disponibles
         })
         .catch((error) => {
           console.error("Error al obtener los horarios disponibles:", error);
         });
     } else {
-      setAvailableTimes([]);
+      setAvailableTimes([]); // Si no hay fecha seleccionada, borra los horarios
     }
   }, [selectedDate]);
 
   const handleDateChange = (date) => {
     if (onDateChange) {
-      onDateChange(date);
+      onDateChange(date); // Llamar a la función proporcionada para manejar el cambio de fecha
     }
   };
 
   const handleTimeChange = (e) => {
-    const selectedTime = e.target.value;
-    if (onTimeChange) {
-      onTimeChange(selectedTime);
-    }
+    // Tu lógica para manejar el cambio de hora
+    console.log("Hora seleccionada:", e.target.value);
   };
 
   return (
