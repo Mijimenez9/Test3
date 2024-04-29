@@ -44,7 +44,7 @@ const Registro = () => {
     })
     .then((response) => {
       
-  
+      //
       // Obtener el ID del examen correspondiente a la fecha y hora seleccionadas
       Axios.get(`http://localhost:3307/getExamenId?fecha=${formValues.fechaExamen}&hora=${formValues.horaExamen}`)
         .then((response) => {
