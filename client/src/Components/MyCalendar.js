@@ -4,8 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./CalendarStyles.css";
 
-const MyCalendar = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
+const MyCalendar = ({ onDateChange, selectedDate }) => {
   const [availableDates, setAvailableDates] = useState([]);
   const [availableTimes, setAvailableTimes] = useState([]);
 
@@ -37,7 +36,14 @@ const MyCalendar = () => {
   }, [selectedDate]);
 
   const handleDateChange = (date) => {
-    setSelectedDate(date);
+    if (onDateChange) {
+      onDateChange(date); // Llamar a la función proporcionada para manejar el cambio de fecha
+    }
+  };
+
+  const handleTimeChange = (e) => {
+    // Tu lógica para manejar el cambio de hora
+    console.log("Hora seleccionada:", e.target.value);
   };
 
   return (
@@ -57,7 +63,8 @@ const MyCalendar = () => {
       />
 
       {selectedDate && (
-        <select>
+        <select onChange={handleTimeChange}>
+          <option value="">Selecciona una hora</option>
           {availableTimes.map((time, index) => (
             <option key={index} value={time}>
               {time}

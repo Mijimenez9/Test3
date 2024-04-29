@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,  } from "react";
 import Axios from "axios";
 import { Container, Card, Form, Button, Row, Col } from "react-bootstrap";
 import "./registro.css";
@@ -12,15 +12,20 @@ const Registro = () => {
     nombres: "",
     genero: "",
     folioPago: "",
-    carrera: "",
+    carrera:"",
     numControl: "",
     semestre: "",
     email: "",
     telefono: "",
-    fechaExamen: null,
+    fechaExamen: null, // Agregado
+    horaExamen: null, // Agregado
   });
 
   const [emailError, setEmailError] = useState("");
+
+
+
+
 
   const add = () => {
     Axios.post("http://localhost:3307/create", {
@@ -28,22 +33,48 @@ const Registro = () => {
       apellidoMaterno: formValues.apellidoMaterno,
       nombres: formValues.nombres,
       genero: formValues.genero,
-      folioPago: formValues.folioPago,
       carrera: formValues.carrera,
       numControl: formValues.numControl,
       semestre: formValues.semestre,
       email: formValues.email,
       telefono: formValues.telefono,
       fechaExamen: formValues.fechaExamen,
+      horaExamen: formValues.horaExamen,
+      folioPago : formValues.folioPago,
     })
-      .then((response) => {
-        alert("Estudiante registrado");
-      })
-      .catch((error) => {
-        alert(error);
-      });
+    .then((response) => {
+      const estudianteId = response.data.id; // Obtener el ID del estudiante recién insertado
+  
+      // Obtener el ID del examen correspondiente a la fecha y hora seleccionadas
+      Axios.get(`http://localhost:3307/getExamenId?fecha=${formValues.fechaExamen}&hora=${formValues.horaExamen}`)
+        .then((response) => {
+          const examenId = response.data.id_examen;
+  
+          // Insertar datos en la tabla Cita
+          Axios.post("http://localhost:3307/createCita", {
+            numero_control: formValues.numControl, // Cambiado a numero_control
+            id_examen: examenId,
+            fechaExamen: formValues.fechaExamen,
+            horaExamen: formValues.horaExamen,
+            folioPago: formValues.folioPago, // Suponiendo que formValues.folioPago contiene el recibo
+            estatus: 'ACTIVO'
+          })
+          .then(() => {
+            alert("Estudiante registrado y cita agendada");
+          })
+          .catch((error) => {
+            alert("Error al agendar cita: " + error);
+          });
+        })
+        .catch((error) => {
+          alert("Error al obtener ID de examen: " + error);
+        });
+    })
+    .catch((error) => {
+      alert("Error al registrar estudiante: " + error);
+    });
   };
-
+  
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     let newValue = value;
@@ -74,6 +105,21 @@ const Registro = () => {
       ...prevState,
       [id]: newValue,
     }));
+    // Actualizar el campo de fecha de examen
+    if (id === "fechaExamen") {
+      newValue = value; // La fecha ya viene en el formato correcto desde el componente MyCalendar
+    }
+
+    // Actualizar el campo de hora de examen
+    if (id === "horaExamen") {
+      newValue = value; // La hora viene directamente del componente que muestra las horas disponibles
+    }
+    // Actualizar el campo de género
+    if (id === "genero") {
+      newValue = value.slice(0, 1).toUpperCase(); // Convertir a mayúscula y obtener la primera letra
+    }
+
+    
   };
 
   const handleEmailBlur = (e) => {
@@ -253,13 +299,13 @@ const Registro = () => {
                   <Form.Group controlId="fechaExamen">
                     <Form.Label>Fecha de Examen:</Form.Label>
                     <MyCalendar
-                      selected={formValues.fechaExamen}
-                      onChange={(date) =>
+                      selectedDate={formValues.fechaExamen}
+                      onDateChange={(date) =>
                         setFormValues((prevState) => ({
                           ...prevState,
                           fechaExamen: date,
                         }))
-                      } // Actualizar el estado de la fecha de examen
+                      }
                     />
                   </Form.Group>
                 </Col>

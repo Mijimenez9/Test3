@@ -1,24 +1,21 @@
 CREATE DATABASE sistemas_lenguas_extranjeras;
 use sistemas_lenguas_extranjeras;
+-- drop database sistemas_lenguas_extranjeras;
+-- CREATE TABLE Carrera (
+ --  id_carrera INT PRIMARY KEY AUTO_INCREMENT,
+  -- nombre_carrera VARCHAR(100) NOT NULL
+-- );
 
-CREATE TABLE Carrera (
-  id_carrera INT PRIMARY KEY AUTO_INCREMENT,
-  nombre_carrera VARCHAR(100) NOT NULL
-);
 CREATE TABLE Estudiante (
-  id_estudiante INT PRIMARY KEY AUTO_INCREMENT,
+  numero_control VARCHAR(20) PRIMARY KEY,
   nombre VARCHAR(255) NOT NULL,
   apellido_paterno VARCHAR(255) NOT NULL,
   apellido_materno VARCHAR(255) NOT NULL,
-  numero_control VARCHAR(20) UNIQUE NOT NULL,
-  id_carrera INT NOT NULL,
+  carrera VARCHAR(50) NOT NULL,
   correo_electronico VARCHAR(255) NOT NULL,
   telefono VARCHAR(20) NOT NULL,
-  sexo VARCHAR(1) NOT NULL,
-  FOREIGN KEY (id_carrera) REFERENCES Carrera(id_carrera)
+  sexo VARCHAR(1) NOT NULL
 );
-
-
 
 CREATE TABLE Examen (
   id_examen INT PRIMARY KEY AUTO_INCREMENT,
@@ -27,16 +24,16 @@ CREATE TABLE Examen (
   duracion INT NOT NULL,
   cupo_maximo INT NOT NULL
 );
-
+drop table cita
 CREATE TABLE Cita (
   id_cita INT PRIMARY KEY AUTO_INCREMENT,
-  id_estudiante INT NOT NULL,
+  numero_control VARCHAR(20) NOT NULL, -- Cambiado a VARCHAR(20)
   id_examen INT NOT NULL,
-  fecha_cita DATE NOT NULL,
-  hora_cita TIME NOT NULL,
-  recibo VARCHAR(255) NOT NULL,
+  fechaExamen DATE NOT NULL,
+  horaExamen TIME NOT NULL,
+  folio_pago VARCHAR(255) NOT NULL,
   estatus VARCHAR(10) NOT NULL,
-  FOREIGN KEY (id_estudiante) REFERENCES Estudiante(id_estudiante),
+  FOREIGN KEY (numero_control) REFERENCES Estudiante(numero_control),
   FOREIGN KEY (id_examen) REFERENCES Examen(id_examen)
 );
 
