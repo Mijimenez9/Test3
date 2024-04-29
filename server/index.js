@@ -16,7 +16,7 @@ const db = mysql.createConnection({
 });
 
 app.post("/create", (req, res) => {
-    const { nombres, apellidoMaterno, apellidoPaterno, numControl, carrera, genero, email, telefono, fechaExamen, horaExamen } = req.body;
+    const { nombres, apellidoMaterno, apellidoPaterno, numControl, carrera, genero, email, telefono } = req.body;
   
     db.query('INSERT INTO Estudiante(nombre, apellido_paterno, apellido_materno, numero_control, carrera, correo_electronico, telefono, sexo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [nombres, apellidoPaterno, apellidoMaterno, numControl, carrera, email, telefono, genero],
@@ -33,7 +33,7 @@ app.post("/create", (req, res) => {
   app.post("/createCita", (req, res) => {
     const { id_estudiante, id_examen, fechaExamen, horaExamen, folioPago } = req.body;
   
-    db.query('INSERT INTO Cita(numero_control, id_examen, fechaExamen, horaExamen, folioPago, estatus) VALUES (?, ?, ?, ?, ?, ?)',
+    db.query('INSERT INTO Cita(numero_control,id_examen,fechaExamen,horaExamen,folioPago,estatus) VALUES (?, ?, ?, ?, ?, ?)',
       [id_estudiante, id_examen, fechaExamen, horaExamen, folioPago, 'ACTIVO'], // Suponiendo que el estatus siempre es 'ACTIVO' al crear una cita
       (err, result) => {
         if (err) {

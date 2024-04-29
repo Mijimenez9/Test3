@@ -1,4 +1,4 @@
-import React, { useState,  } from "react";
+import React, { useState } from "react";
 import Axios from "axios";
 import { Container, Card, Form, Button, Row, Col } from "react-bootstrap";
 import "./registro.css";
@@ -12,7 +12,7 @@ const Registro = () => {
     nombres: "",
     genero: "",
     folioPago: "",
-    carrera:"",
+    carrera: "",
     numControl: "",
     semestre: "",
     email: "",
@@ -23,58 +23,44 @@ const Registro = () => {
 
   const [emailError, setEmailError] = useState("");
 
-
-
-
-
   const add = () => {
-    Axios.post("http://localhost:3307/create", {
-      apellidoPaterno: formValues.apellidoPaterno,
-      apellidoMaterno: formValues.apellidoMaterno,
-      nombres: formValues.nombres,
-      genero: formValues.genero,
-      carrera: formValues.carrera,
-      numControl: formValues.numControl,
-      semestre: formValues.semestre,
-      email: formValues.email,
-      telefono: formValues.telefono,
-      fechaExamen: formValues.fechaExamen,
-      horaExamen: formValues.horaExamen,
-      folioPago : formValues.folioPago,
-    })
-    .then((response) => {
-      const estudianteId = response.data.id; // Obtener el ID del estudiante recién insertado
-  
-      // Obtener el ID del examen correspondiente a la fecha y hora seleccionadas
-      Axios.get(`http://localhost:3307/getExamenId?fecha=${formValues.fechaExamen}&hora=${formValues.horaExamen}`)
-        .then((response) => {
-          const examenId = response.data.id_examen;
-  
-          // Insertar datos en la tabla Cita
-          Axios.post("http://localhost:3307/createCita", {
-            numero_control: formValues.numControl, // Cambiado a numero_control
-            id_examen: examenId,
-            fechaExamen: formValues.fechaExamen,
-            horaExamen: formValues.horaExamen,
-            folioPago: formValues.folioPago, // Suponiendo que formValues.folioPago contiene el recibo
-            estatus: 'ACTIVO'
-          })
-          .then(() => {
-            alert("Estudiante registrado y cita agendada");
+    // Primero, registra al estudiante
+    Axios.post("http://localhost:3307/create", formValues)
+      .then((response) => {
+        const estudianteId = response.data.id; // Obtener el ID del estudiante registrado
+
+        // Obtener el ID del examen correspondiente a la fecha y hora seleccionadas
+        Axios.get(
+          `http://localhost:3307/getExamenId?fecha=${formValues.fechaExamen}&hora=${formValues.horaExamen}`
+        )
+          .then((response) => {
+            const examenId = response.data.id_examen; // Obtener el ID del examen
+
+            // Insertar datos en la tabla Cita
+            Axios.post("http://localhost:3307/createCita", {
+              id_estudiante: estudianteId,
+              id_examen: examenId,
+              fechaExamen: formValues.fechaExamen,
+              horaExamen: formValues.horaExamen,
+              folioPago: formValues.folioPago,
+              estatus: "ACTIVO", // Suponiendo que el estatus siempre es 'ACTIVO' al crear una cita
+            })
+              .then(() => {
+                alert("Estudiante registrado y cita agendada");
+              })
+              .catch((error) => {
+                alert("Error al agendar cita: " + error);
+              });
           })
           .catch((error) => {
-            alert("Error al agendar cita: " + error);
+            alert("Error al obtener ID de examen: " + error);
           });
-        })
-        .catch((error) => {
-          alert("Error al obtener ID de examen: " + error);
-        });
-    })
-    .catch((error) => {
-      alert("Error al registrar estudiante: " + error);
-    });
+      })
+      .catch((error) => {
+        alert("Error al registrar estudiante: " + error);
+      });
   };
-  
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     let newValue = value;
@@ -118,8 +104,6 @@ const Registro = () => {
     if (id === "genero") {
       newValue = value.slice(0, 1).toUpperCase(); // Convertir a mayúscula y obtener la primera letra
     }
-
-    
   };
 
   const handleEmailBlur = (e) => {
@@ -300,10 +284,17 @@ const Registro = () => {
                     <Form.Label>Fecha de Examen:</Form.Label>
                     <MyCalendar
                       selectedDate={formValues.fechaExamen}
+                      selectedTime={formValues.horaExamen}
                       onDateChange={(date) =>
                         setFormValues((prevState) => ({
                           ...prevState,
                           fechaExamen: date,
+                        }))
+                      }
+                      onTimeChange={(time) =>
+                        setFormValues((prevState) => ({
+                          ...prevState,
+                          horaExamen: time,
                         }))
                       }
                     />
