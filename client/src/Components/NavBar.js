@@ -21,6 +21,9 @@ const NavBar = () => {
                         <li className="nav-item">
                             <NavLink to='/LoginScreen' className="nav-link">Login</NavLink>
                         </li>
+                        <li className="nav-item">
+                            <NavLink to='/RegistroExamen' className="nav-link">Registrar Examen</NavLink>
+                        </li>
                     </ul>
                 </div>
             </div>

@@ -5,6 +5,7 @@ import Inicio from './Components/inicio';
 import Registro from './Components/registro'; 
 import './App.css';
 import LoginScreen from './Components/LoginScreen';
+import RegistroExamen from './Components/RegistroExamen';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path='/' element={<Inicio></Inicio> }></Route>
         <Route path='/Registro' element={<Registro></Registro> }></Route>
         <Route path='/*' element={<Navigate to='/' />}></Route>
+        <Route path='/RegistroExamen' element={<RegistroExamen></RegistroExamen>} ></Route>
         <Route path='/LoginScreen' element={<LoginScreen></LoginScreen> }></Route>
       </Routes>
 

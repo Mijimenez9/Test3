@@ -146,6 +146,31 @@ const Registro = () => {
           <Card.Body>
             <h2 className="text-center mb-4">Registro de examen</h2>
             <Form onSubmit={handleSubmit}>
+
+
+ {/* Fecha de examen */}
+ <h5>Fecha de examen</h5>
+              <Row>
+                <Col md={6}>
+                  <Form.Group controlId="fechaExamen">
+                    <Form.Label>Fecha de Examen:</Form.Label>
+                    <MyCalendar
+                      selectedDate={formValues.fechaExamen}
+                      onDateChange={(date) =>
+                        setFormValues((prevState) => ({
+                          ...prevState,
+                          fechaExamen: date,
+                        }))
+                      }
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+
+
+
+
               {/* Información personal */}
               <h5>Información personal</h5>
               <Row>
@@ -292,24 +317,7 @@ const Registro = () => {
                   </Form.Group>
                 </Col>
               </Row>
-              {/* Fecha de examen */}
-              <h5>Fecha de examen</h5>
-              <Row>
-                <Col md={6}>
-                  <Form.Group controlId="fechaExamen">
-                    <Form.Label>Fecha de Examen:</Form.Label>
-                    <MyCalendar
-                      selectedDate={formValues.fechaExamen}
-                      onDateChange={(date) =>
-                        setFormValues((prevState) => ({
-                          ...prevState,
-                          fechaExamen: date,
-                        }))
-                      }
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
+             
 
               {/* Información de contacto */}
               <h5>Información de contacto</h5>
