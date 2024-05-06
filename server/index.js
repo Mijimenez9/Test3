@@ -16,16 +16,16 @@ const db = mysql.createConnection({
 });
 
 app.post("/create", (req, res) => {
-    const { nombres, apellidoMaterno, apellidoPaterno, numControl, carrera, genero, email, telefono, fechaExamen, horaExamen } = req.body;
+    const { folioPago,nombres, apellidoMaterno, apellidoPaterno, numControl, carrera, genero, email, telefono, fechaExamen, horaExamen } = req.body;
   
-    db.query('INSERT INTO Estudiante(nombre, apellido_paterno, apellido_materno, numero_control, carrera, correo_electronico, telefono, sexo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [nombres, apellidoPaterno, apellidoMaterno, numControl, carrera, email, telefono, genero],
+    db.query('INSERT INTO Estudiante(folioPago,nombre, apellido_paterno, apellido_materno, numero_control, carrera, correo_electronico, telefono, sexo) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)',
+      [folioPago,nombres, apellidoPaterno, apellidoMaterno, numControl, carrera, email, telefono, genero],
       (err, result) => {
         if (err) {
           console.log(err);
           res.status(500).send("Error al registrar estudiante");
         } else {
-          // Lógica para manejar la inserción exitosa
+          res.status(200).send("Estudiante registrado correctamente");
         }
       }
     );
@@ -92,7 +92,32 @@ app.get("/getExamenId", (req, res) => {
       }
     );
 });
+app.get("/buscarFolio", (req, res) => {
+  const folioPago = req.query.folioPago;
 
+  db.query(
+    "SELECT * FROM Estudiante WHERE folioPago = ?",
+    [folioPago],
+    (err, result) => {
+      if (err) {
+        console.error("Error al buscar el folio:", err);
+        res.status(500).send("Error al buscar el folio");
+        
+      } else {
+        if (result.length > 0) {
+          // Si se encuentra el folio, enviar los datos al cliente
+          res.status(200).json(result[0]);
+          console.log("FOLIO  ENCONTRADO" );
+
+        } else {
+          // Si el folio no se encuentra, responder con un error
+          res.status(404).send("FOLIO NO ENCONTRADO");
+          console.log("FOLIO NO ENCONTRADO"+folioPago+" //aa");
+        }
+      }
+    }
+  );
+});
 app.listen(3307,()=>{
     console.log("Corriendo en el puerto 3307")
 

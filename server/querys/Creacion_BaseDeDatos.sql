@@ -7,11 +7,12 @@ use sistemas_lenguas_extranjeras;
 -- );
 
 CREATE TABLE Estudiante (
-  numero_control VARCHAR(20) PRIMARY KEY,
+  folioPago VARCHAR(255) PRIMARY KEY NOT NULL, 
+  numero_control VARCHAR(20) NOT NULL,
   nombre VARCHAR(255) NOT NULL,
   apellido_paterno VARCHAR(255) NOT NULL,
   apellido_materno VARCHAR(255) NOT NULL,
-  carrera VARCHAR(50) NOT NULL,
+  carrera VARCHAR(255) NOT NULL,
   correo_electronico VARCHAR(255) NOT NULL,
   telefono VARCHAR(20) NOT NULL,
   sexo VARCHAR(1) NOT NULL
@@ -24,16 +25,16 @@ CREATE TABLE Examen (
   duracion INT NOT NULL,
   cupo_maximo INT NOT NULL
 );
-drop table cita
+
 CREATE TABLE Cita (
   id_cita INT PRIMARY KEY AUTO_INCREMENT,
-  numero_control VARCHAR(20) NOT NULL, -- Cambiado a VARCHAR(20)
+  folioPago VARCHAR(255) NOT NULL, 
   id_examen INT NOT NULL,
   fechaExamen DATE NOT NULL,
   horaExamen TIME NOT NULL,
-  folio_pago VARCHAR(255) NOT NULL,
+  
   estatus VARCHAR(10) NOT NULL,
-  FOREIGN KEY (numero_control) REFERENCES Estudiante(numero_control),
+  FOREIGN KEY (folioPago) REFERENCES Estudiante(folioPago),
   FOREIGN KEY (id_examen) REFERENCES Examen(id_examen)
 );
 
@@ -42,7 +43,9 @@ CREATE TABLE Calificacion (
   id_cita INT NOT NULL,
   calificacion INT NOT NULL,
   aprobado BOOLEAN NOT NULL,
-  FOREIGN KEY (id_cita) REFERENCES Cita(id_cita)
+  folioPago VARCHAR(255) NOT NULL,
+  FOREIGN KEY (id_cita) REFERENCES Cita(id_cita),
+  FOREIGN KEY (folioPago) REFERENCES Estudiante(folioPago)
 );
 
 CREATE TABLE Administrador (
