@@ -36,13 +36,17 @@ const RegistroExamen = () => {
             <form onSubmit={handleSubmit}>
               <div className="campo">
                 <h3>Fecha de Examen:</h3>
+                
                 <CalendarioAdmin
+                
                   selectedDate={formValues.fechaExamen}
                   onDateChange={(date) =>
                     setFormValues((prevState) => ({
                       ...prevState,
                       fechaExamen: date,
-                    }))
+                    }
+                  
+                  ))
                   }
                 />
               </div>

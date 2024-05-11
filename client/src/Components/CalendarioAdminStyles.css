@@ -38,8 +38,11 @@
   .calendar{
     
     background-color: green;
-    margin-top:1px;
-    top: -300px;
-    right: 50%;
+    margin:40px  ;
+    left: -300px;
+    margin-top: -200px;
+    display: block;
+
+    
     
   }

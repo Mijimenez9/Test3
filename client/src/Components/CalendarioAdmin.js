@@ -32,7 +32,7 @@ const CalendarioAdmin = ({ onDateChange, selectedDate }) => {
   };
 
   return (
-    <div style={{ display: "block" }}>
+    <div style={{ display: "block" ,margin:'0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
         <h2>Calendario</h2>
         <DatePicker
