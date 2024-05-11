@@ -118,6 +118,52 @@ app.get("/buscarFolio", (req, res) => {
     }
   );
 });
+app.post("/createExamen", (req, res) => {
+  const { fechaExamen, horaExamen, cupoMaximo } = req.body;
+
+  db.query('INSERT INTO Examen(fecha_examen, hora_examen, cupo_maximo) VALUES (?, ?, ?)',
+    [fechaExamen, horaExamen, cupoMaximo],
+    (err, result) => {
+      if (err) {
+        console.error("Error al crear examen:", err);
+        res.status(500).send("Error al crear examen");
+        console.log("Error al crear examen")
+      } else {
+        res.status(200).send("Examen creado correctamente");
+        console.log(" EXAMEN CREADO");
+      }
+    }
+  );
+});
+
+app.post("/updateEstudiante", (req, res) => {
+  const {
+    folioPago,
+    nombres,
+    apellidoMaterno,
+    apellidoPaterno,
+    numControl,
+    carrera,
+    genero,
+    email,
+    telefono,
+    calificacion
+  } = req.body;
+
+  db.query(
+    "UPDATE Estudiante SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, numero_control = ?, carrera = ?, correo_electronico = ?, telefono = ?, sexo = ?, calificacion = ? WHERE folioPago = ?",
+    [nombres, apellidoPaterno, apellidoMaterno, numControl, carrera, email, telefono, genero, calificacion, folioPago],
+    (err, result) => {
+      if (err) {
+        console.error("Error al actualizar estudiante:", err);
+        res.status(500).send("Error al actualizar estudiante");
+      } else {
+        res.status(200).send("Estudiante actualizado correctamente");
+      }
+    }
+  );
+});
+
 app.listen(3307,()=>{
     console.log("Corriendo en el puerto 3307")
 

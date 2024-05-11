@@ -1,65 +1,64 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import './CalendarioAdminStyles.css'
+import './CalendarioAdminStyles.css';
 
-const CalendarioAdmin = ({ selectedDate, onDateChange }) => {
-  // Obtener la fecha actual
-  const today = new Date();
+const CalendarioAdmin = ({ onDateChange, selectedDate }) => {
+  const [availableTimes, setAvailableTimes] = useState([]);
+  const [minSelectableDate, setMinSelectableDate] = useState(new Date()); // Fecha mínima seleccionable (por defecto, es el día actual)
 
-  // Obtener la hora actual
-  const currentHour = today.getHours();
+  useEffect(() => {
+    generateAvailableTimes();
+  }, [selectedDate]);
 
-  // Definir las horas mínimas y máximas permitidas
-  const minTime = new Date();
-  minTime.setHours(7, 0, 0); // 7:00 AM
-
-  const maxTime = new Date();
-  maxTime.setHours(17, 0, 0); // 5:00 PM
-
-  // Filtrar las horas disponibles
-  const filterTime = time => {
-    if (selectedDate) {
-      // Si es hoy y la hora es anterior a la hora actual, no mostrar
-      if (selectedDate.getDate() === today.getDate() && time < currentHour) {
-        return false;
-      }
+  const handleDateChange = (date) => {
+    if (onDateChange) {
+      onDateChange(date); // Llamar a la función proporcionada para manejar el cambio de fecha
     }
-    return true;
+  };
+
+  const generateAvailableTimes = () => {
+    if (selectedDate) {
+      const times = [];
+      const minHour = 7; // 7:00 AM
+      const maxHour = 17; // 5:00 PM
+
+      for (let hour = minHour; hour <= maxHour; hour++) {
+        times.push(`${hour.toString().padStart(2, '0')}:00`);
+      }
+
+      setAvailableTimes(times);
+    }
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-     
-    <DatePicker
-      selected={selectedDate}
-      onChange={date => onDateChange(date)}
-      dateFormat="dd/MM/yyyy"
-      calendarClassName="calendar"
-      className="calendar"
-      open={true}
-      readOnly
-      minDate={today} // Solo se pueden seleccionar días posteriores a hoy
-      minTime={minTime}
-      maxTime={maxTime}
-      showTimeSelect
-      timeFormat="HH:mm"
-      timeIntervals={60}
-      timeCaption="Hora"
-      filterTime={filterTime}
-    />
-     <style>
+    <div style={{ display: "block" }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+        <h2>Calendario</h2>
+        <DatePicker
+          selected={selectedDate}
+          onChange={handleDateChange}
+          dateFormat="dd-MM-yyyy"
+          calendarClassName="calendar"
+          className="calendar"
+          open={true}
+          readOnly
+          minDate={minSelectableDate} // Solo se pueden seleccionar fechas posteriores o iguales a hoy
+        />
+        <style>
           {`
             .react-datepicker-wrapper input {
               display: none;
             }
             .react-datepicker {
-                width: 200%;
-                display: flex;
-            
-              }
+              width: 200%;
+              display: flex;
+            }
           `}
         </style>
+      </div>
+      
+      
     </div>
   );
 };

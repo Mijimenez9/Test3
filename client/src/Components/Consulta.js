@@ -4,85 +4,102 @@ import { Container, Card, Form, Button, Row, Col } from "react-bootstrap";
 import "./registro.css";
 
 const Consulta = () => {
-    const [formValues, setFormValues] = useState({
-      apellidoPaterno: "",
-      apellidoMaterno: "",
-      nombres: "",
-      genero: "",
-      folioPago: "",
-      carrera: "",
-      numControl: "",
-      semestre: "",
-      email: "",
-      telefono: "",
-    });
-  
-    const [isConsultaDisabled, setIsConsultaDisabled] = useState(false); // Cambiado a false
-    const [isModificarEnabled, setIsModificarEnabled] = useState(true); // Cambiado a true
-  
-    const handleInputChange = (e) => {
-      const { id, value } = e.target;
-      setFormValues((prevState) => ({
-        ...prevState,
-        [id]: value,
-      }));
-    };
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-  
-      // Validar si el campo de folio está vacío
-      if (!formValues.folioPago) {
-        alert("Por favor, ingrese un folio antes de enviar el formulario.");
-        return;
+  const initialState = {
+    apellidoPaterno: "",
+    apellidoMaterno: "",
+    nombres: "",
+    genero: "",
+    folioPago: "",
+    carrera: "",
+    numControl: "",
+    calificacion: "",
+    email: "",
+    telefono: "",
+  };
+
+  const [formValues, setFormValues] = useState(initialState);
+ 
+  const [isConsultaDisabled, setIsConsultaDisabled] = useState(false);
+  const [isModificarEnabled, setIsModificarEnabled] = useState(false);
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormValues((prevState) => ({
+      ...prevState,
+      [id]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formValues.folioPago) {
+      alert("Por favor, ingrese un folio antes de enviar el formulario.");
+      return;
+    }
+
+    try {
+      const response = await Axios.get(`http://localhost:3307/buscarFolio?folioPago=${formValues.folioPago}`);
+      
+      if (response.data) {
+        setFormValues({
+          ...initialState,
+          apellidoPaterno: response.data.apellido_paterno,
+          apellidoMaterno: response.data.apellido_materno,
+          nombres: response.data.nombre,
+          carrera: response.data.carrera,
+          email: response.data.correo_electronico,
+          telefono: response.data.telefono,
+          genero: response.data.sexo,
+          numControl: response.data.numero_control,
+          calificacion: response.data.calificacion,
+          folioPago:response.data.folioPago,
+        });
+        setIsConsultaDisabled(true);
+        setIsModificarEnabled(true);
+      } else {
+        alert("FOLIO NO ENCONTRADO. Por favor, ingrese un folio correcto.");
       }
+    } catch (error) {
+      console.error("Error al buscar el folio:", error);
+    }
+  };
+
+
+
+  const handleCancel = () => {
+    setFormValues(initialState);
+    
+    setIsConsultaDisabled(false);
+    setIsModificarEnabled(false);
+  };
+
   
-      try {
-        const response = await Axios.get(`http://localhost:3307/buscarFolio?folioPago=${formValues.folioPago}`);
-        
-        if (response.data) {
-          setFormValues(prevState => ({
-            ...prevState, 
-            apellidoPaterno: response.data.apellido_paterno,
-            apellidoMaterno: response.data.apellido_materno,
-            nombres: response.data.nombre,
-            carrera: response.data.carrera,
-            email: response.data.correo_electronico,
-            telefono: response.data.telefono,
-            genero: response.data.sexo,
-            numControl: response.data.numero_control,
-          }));
-          setIsConsultaDisabled(true);
-          setIsModificarEnabled(true);
-        } else {
-          alert("FOLIO NO ENCONTRADO");
-        }
-      } catch (error) {
-        console.error("Error al buscar el folio:", error);
-      }
-    };
-  
-    const handleModify = () => {
+  const handleModify = async () => {
+    try {
       setIsConsultaDisabled(false);
       setIsModificarEnabled(false);
-    };
-  
-    const handleCancel = () => {
-      setFormValues({
-        apellidoPaterno: "",
-        apellidoMaterno: "",
-        nombres: "",
-        genero: "",
-        folioPago: "",
-        carrera: "",
-        numControl: "",
-        semestre: "",
-        email: "",
-        telefono: "",
+      await Axios.post("http://localhost:3307/updateEstudiante", {
+        
+        nombres: formValues.nombres,
+        apellidoMaterno: formValues.apellidoMaterno,
+        apellidoPaterno: formValues.apellidoPaterno,
+        numControl: formValues.numControl,
+        carrera: formValues.carrera,
+        genero: formValues.genero,
+        email: formValues.email,
+        telefono: formValues.telefono,
+        calificacion: formValues.calificacion,
+        folioPago:formValues.folioPago,
       });
-      setIsConsultaDisabled(true);
+      alert("Estudiante actualizado correctamente");
+      setIsConsultaDisabled(false);
       setIsModificarEnabled(false);
-    };
+    } catch (error) {
+      console.error("Error al modificar estudiante:", error);
+      alert("Error al modificar estudiante");
+    }
+  };
 
   return (
     <Container className="my-5">
@@ -100,6 +117,7 @@ const Consulta = () => {
                     value={formValues.folioPago}
                     onChange={handleInputChange}
                     disabled={isConsultaDisabled}
+                    
                   />
                 </Form.Group>
               </Col>
@@ -113,7 +131,7 @@ const Consulta = () => {
                     placeholder="Apellido Paterno"
                     value={formValues.apellidoPaterno}
                     onChange={handleInputChange}
-                    disabled={isConsultaDisabled}
+                    disabled={!isModificarEnabled}
                   />
                 </Form.Group>
               </Col>
@@ -125,7 +143,7 @@ const Consulta = () => {
                     placeholder="Apellido Materno"
                     value={formValues.apellidoMaterno}
                     onChange={handleInputChange}
-                    disabled={isConsultaDisabled}
+                    disabled={!isModificarEnabled}
                   />
                 </Form.Group>
               </Col>
@@ -139,7 +157,7 @@ const Consulta = () => {
                     placeholder="Nombres"
                     value={formValues.nombres}
                     onChange={handleInputChange}
-                    disabled={isConsultaDisabled}
+                    disabled={!isModificarEnabled}
                   />
                 </Form.Group>
               </Col>
@@ -150,7 +168,7 @@ const Consulta = () => {
                     as="select"
                     value={formValues.genero}
                     onChange={handleInputChange}
-                    disabled={isConsultaDisabled}
+                    disabled={!isModificarEnabled}
                   >
                     <option value="">Selecciona</option>
                     <option value="masculino">Masculino</option>
@@ -167,7 +185,7 @@ const Consulta = () => {
                     as="select"
                     value={formValues.carrera}
                     onChange={handleInputChange}
-                    disabled={isConsultaDisabled}
+                    disabled={!isModificarEnabled}
                   >
                     <option value="">Selecciona</option>
                     <option value="Arquitectura">Arquitectura</option>
@@ -184,25 +202,12 @@ const Consulta = () => {
                     placeholder="Número de Control"
                     value={formValues.numControl}
                     onChange={handleInputChange}
-                    disabled={isConsultaDisabled}
+                    disabled={!isModificarEnabled}
                   />
                 </Form.Group>
               </Col>
             </Row>
-            <Row>
-              <Col md={6}>
-                <Form.Group controlId="semestre">
-                  <Form.Label>Semestre:</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Semestre"
-                    value={formValues.semestre}
-                    onChange={handleInputChange}
-                    disabled={isConsultaDisabled}
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
+            
             <Row>
               <Col md={6}>
                 <Form.Group controlId="email">
@@ -212,7 +217,7 @@ const Consulta = () => {
                     placeholder="correo@ejemplo.com"
                     value={formValues.email}
                     onChange={handleInputChange}
-                    disabled={isConsultaDisabled}
+                    disabled={!isModificarEnabled}
                   />
                   <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
                 </Form.Group>
@@ -225,7 +230,21 @@ const Consulta = () => {
                     placeholder="Número Telefónico"
                     value={formValues.telefono}
                     onChange={handleInputChange}
-                    disabled={isConsultaDisabled}
+                    disabled={!isModificarEnabled}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group controlId="calificacion">
+                  <Form.Label>Calificación:</Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Calificación"
+                    value={formValues.calificacion}
+                    onChange={handleInputChange}
+                    disabled={!isModificarEnabled}
                   />
                 </Form.Group>
               </Col>
@@ -241,7 +260,7 @@ const Consulta = () => {
               </Button>
               {isModificarEnabled && (
                 <Button variant="danger" onClick={handleCancel}>
-                  Limpiar
+                  Cancelar
                 </Button>
               )}
             </div>
