@@ -95,6 +95,7 @@ const Consulta = () => {
       alert("Estudiante actualizado correctamente");
       setIsConsultaDisabled(false);
       setIsModificarEnabled(false);
+      setFormValues(initialState);
     } catch (error) {
       console.error("Error al modificar estudiante:", error);
       alert("Error al modificar estudiante");
