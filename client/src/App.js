@@ -5,6 +5,7 @@ import Inicio from './Components/inicio';
 import Registro from './Components/registro'; 
 import './App.css';
 import LoginScreen from './Components/LoginScreen';
+import ExamConfirmation from './Components/ExamConfirmation';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path='/Registro' element={<Registro></Registro> }></Route>
         <Route path='/*' element={<Navigate to='/' />}></Route>
         <Route path='/LoginScreen' element={<LoginScreen></LoginScreen> }></Route>
+        <Route path='/Confirmacion' element={<ExamConfirmation></ExamConfirmation> }></Route>
       </Routes>
 
     </div>
