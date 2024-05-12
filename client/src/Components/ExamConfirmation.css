@@ -1,0 +1,55 @@
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    color: #333;
+    font-size: 16px;
+}
+
+main {
+    background-color: white;
+    padding: 20px 40px; /* Aumenta el padding para centrar el contenido */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(78, 56, 56, 0.836);
+    margin: 25px auto; /* Centra el main horizontalmente */
+    max-width: 600px; /* Ajusta el ancho máximo */
+    text-align: left; /* Alinea el texto a la izquierda */
+}
+
+
+
+h1, h2, h3, h4 {
+    text-align: left; /* Alinea los títulos a la izquierda */
+    color: #0065A4;
+}
+
+p, strong {
+    text-align: justify; 
+    margin-bottom: 10px; /* Espacio entre párrafos y elementos */
+}
+
+.buttons {
+    text-align: center; /* Centra los botones horizontalmente */
+}
+
+.buttons button {
+    padding: 8px 16px;
+    margin-right: 10px;
+    margin-bottom: 10px; /* Agrega margen inferior para separar los botones */
+    border: none;
+    background-color: #0084ff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.buttons button:last-child {
+    margin-right: 0; /* Elimina el margen derecho del último botón */
+}
+
+.buttons button:hover {
+    background-color: #0056b3;
+}

@@ -15,10 +15,10 @@ const Inicio = () => {
       </div>
 
       {/* Botón Agendar  */}
-      <div className="agendar-btn-container" style={{ textAlign: 'center', marginTop: '20px' }}>
-        <Link to="/Registro" className="btn btn-primary">Agendar</Link> {/* Botón que usa Link */}
+      <div className="agendar-btn-container" style={{ textAlign: 'center', marginTop: '20px' }}> 
+        <Link to="/Registro" className="btn btn-primary" >Agendar</Link> <br/><br/>{/* Botón que usa Link */}
       </div>
-      <h2 style={{ textAlign: 'left', fontSize: '35px', marginTop: '20px' }}>Información adicional</h2>
+      <h2 style={{ textAlign: 'center', fontSize: '35px', marginTop: '20px' }}>Información adicional</h2>
 
       <div className="cards-container">
         {/* Contenedor de tarjetas */}
@@ -29,7 +29,7 @@ const Inicio = () => {
           <div className="card" style={{ width: '18rem' }}>
             <img src={estudiarImg} className="card-top" alt="Card" />
             <div className="card-body">
-              <h5 className="card-title">Recursos para estudiar</h5>
+              <h5 className="card-title">Mide tu nivel de inglés</h5>
               <p className="card-text">Aqui puedes acceder a un test de prueba.</p>
               <a href="#" className="btn btn-primary">Ir</a>
             </div>
@@ -41,7 +41,7 @@ const Inicio = () => {
             <img src={contactoImg} className="card-top" alt="Card" />
             <div className="card-body">
               <h5 className="card-title">Contacto</h5>
-              <p className="card-text">dante@tectijuana.edu.mx
+              <p className="card-text">idiomas@tectijuana.edu.mx <br/>
                 607-84-00 ext 179</p>
               <a href="#" className="btn btn-primary">Ir</a>
             </div>
