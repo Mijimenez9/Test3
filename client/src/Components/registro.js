@@ -14,7 +14,7 @@ const Registro = () => {
     folioPago: "",
     carrera: "",
     numControl: "",
-    semestre: "",
+    
     email: "",
     telefono: "",
     fechaExamen: null,
@@ -129,11 +129,12 @@ const Registro = () => {
             <h2 className="text-center mb-4">Registro de examen</h2>
             <Form onSubmit={handleSubmit}>
               <h5>Fecha de examen</h5>
-              <Row>
+              <Row style={{ marginTop: '0 auto' ,width:'800px',height:'500px'}}>
                 <Col md={6}>
                   <Form.Group controlId="fechaExamen">
                     <Form.Label>Fecha de Examen:</Form.Label>
                     <MyCalendar
+                  
                       selectedDate={formValues.fechaExamen}
                       onDateChange={(date) =>
                         setFormValues((prevState) => ({
@@ -143,6 +144,8 @@ const Registro = () => {
                       }
                       onTimeChange={handleTimeChange}
                     />
+                   
+       
                   </Form.Group>
                 </Col>
               </Row>
@@ -278,19 +281,7 @@ const Registro = () => {
                 </Col>
               </Row>
 
-              <Row>
-                <Col md={6}>
-                  <Form.Group controlId="semestre">
-                    <Form.Label>Semestre:</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Semestre"
-                      value={formValues.semestre}
-                      onChange={handleInputChange}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
+              
 
               <h5>Información de contacto</h5>
               <Row>

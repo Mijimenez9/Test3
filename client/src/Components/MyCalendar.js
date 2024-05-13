@@ -2,47 +2,51 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "./CalendarStyles.css";
-import { format } from "date-fns";
 
-const MyCalendar = ({ onDateChange, selectedDate, selectedTime, onTimeChange }) => {
+const MyCalendar = ({ onDateChange, selectedDate, onTimeChange }) => {
   const [availableDates, setAvailableDates] = useState([]);
   const [availableTimes, setAvailableTimes] = useState([]);
 
   useEffect(() => {
-    // Obtener fechas disponibles al cargar el componente
-    Axios.get("http://localhost:3307/examDates")
-      .then((response) => {
-        setAvailableDates(response.data);
-      })
-      .catch((error) => {
-        console.error("Error al obtener las fechas disponibles:", error);
-      });
+    const fetchDates = async () => {
+      try {
+        const datesResponse = await Axios.get("http://localhost:3307/examDates");
+        setAvailableDates(datesResponse.data);
+        console.log("Datos de fechas disponibles:", datesResponse.data);
+      } catch (error) {
+        console.error("Error al obtener fechas disponibles:", error);
+      }
+    };
+
+    fetchDates();
   }, []);
 
   useEffect(() => {
-    // Obtener horas disponibles cuando se selecciona una fecha
-    if (selectedDate && selectedDate instanceof Date) {
-      // Formatear la fecha en formato 'yyyy-MM-dd'
-      const formattedDate = selectedDate.toISOString().split('T')[0];
-      Axios.get("http://localhost:3307/examTimes?date=" + formattedDate)
-        .then((response) => {
-          setAvailableTimes(response.data); 
-        })
-        .catch((error) => {
-          console.error("Error al obtener los horarios disponibles:", error);
-        });
-    } else {
-      setAvailableTimes([]);
-    }
+    const fetchTimes = async () => {
+      try {
+        console.log("Entra al useEffect");
+        console.log("selectedDate es:", selectedDate);
+        if (selectedDate instanceof Date && !isNaN(selectedDate.getTime())) {
+          console.log("Entra al if");
+          const formattedDate = selectedDate.toLocaleDateString('en-CA'); // Formatea la fecha con el formato deseado
+          console.log("La fecha seleccionada desde useEffect formateada es " + formattedDate);
+          const timesResponse = await Axios.get("http://localhost:3307/examTimes?date=" + formattedDate);
+          setAvailableTimes(timesResponse.data);
+          console.log("Datos de horarios disponibles:", timesResponse.data);
+        } else {
+          setAvailableTimes([]);
+        }
+      } catch (error) {
+        console.error("Error al obtener horarios disponibles:", error);
+      }
+    };
+
+    fetchTimes();
   }, [selectedDate]);
-  
 
   const handleDateChange = (date) => {
     if (onDateChange) {
-      const formattedDate = date instanceof Date ? date.toISOString().split('T')[0] : date;
-      onDateChange(formattedDate);
-      console.log(formattedDate);
+      onDateChange(date);
     }
   };
 
@@ -54,13 +58,13 @@ const MyCalendar = ({ onDateChange, selectedDate, selectedTime, onTimeChange }) 
   };
 
   return (
-    <div style={{ display: "block" }}>
+    <div>
       <h2>Calendario</h2>
       <DatePicker
         selected={selectedDate}
         onChange={handleDateChange}
-        dateFormat="yyyy-MM-dd"
-        isClearable
+        dateFormat="yyyy-MM-dd" // Establece el formato de la fecha
+        open={true}
         filterDate={(date) =>
           availableDates.some(
             (availableDate) =>
@@ -68,9 +72,20 @@ const MyCalendar = ({ onDateChange, selectedDate, selectedTime, onTimeChange }) 
           )
         }
       />
-
-{selectedDate && (
-        <select onChange={handleTimeChange}>
+  <style>
+          {`
+            .react-datepicker-wrapper input {
+              display: none;
+            }
+            .react-datepicker {
+              width: 300%;
+              display: flex;
+              right:60px;
+            }
+          `}
+        </style>
+      <div >
+        <select onChange={handleTimeChange} style={{ marginTop:'350px', top:'-500px'}} >
           <option value="">Selecciona una hora</option>
           {availableTimes.map((time, index) => (
             <option key={index} value={time}>
@@ -78,7 +93,7 @@ const MyCalendar = ({ onDateChange, selectedDate, selectedTime, onTimeChange }) 
             </option>
           ))}
         </select>
-      )}
+      </div>
     </div>
   );
 };
