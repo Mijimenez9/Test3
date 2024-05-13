@@ -57,21 +57,22 @@ app.get("/examDates", (req, res) => {
     });
 });
 app.get("/examTimes", (req, res) => {
-    const selectedDate = req.query.date; // Obtener la fecha seleccionada del query string
-    if (!selectedDate) {
-        return res.status(400).send("La fecha no ha sido proporcionada");
-    }
+  const selectedDate = req.query.date; // Obtener la fecha seleccionada del query string
+  if (!selectedDate) {
+      return res.status(400).send("La fecha no ha sido proporcionada");
+  }
 
-    db.query('SELECT hora_examen FROM Examen WHERE fecha_examen = ?', selectedDate, (err, result) => {
-        if (err) {
-            console.error("Error al obtener los horarios de examen para la fecha seleccionada:", err);
-            return res.status(500).send("Error al obtener los horarios de examen para la fecha seleccionada");
-        } else {
-            const examTimes = result.map(row => row.hora_examen);
-            return res.json(examTimes);
-        }
-    });
+  db.query('SELECT hora_examen FROM Examen WHERE fecha_examen = ?', [selectedDate], (err, result) => {
+      if (err) {
+          console.error("Error al obtener los horarios de examen para la fecha seleccionada:", err);
+          return res.status(500).send("Error al obtener los horarios de examen para la fecha seleccionada");
+      } else {
+          const examTimes = result.map(row => row.hora_examen);
+          return res.json(examTimes);
+      }
+  });
 });
+
 app.get("/getExamenId", (req, res) => {
     const fechaExamen = req.query.fecha;
     const horaExamen = req.query.hora;

@@ -1,4 +1,4 @@
-import React, { useState,  } from "react";
+import React, { useState } from "react";
 import Axios from "axios";
 import { Container, Card, Form, Button, Row, Col } from "react-bootstrap";
 import "./registro.css";
@@ -12,69 +12,52 @@ const Registro = () => {
     nombres: "",
     genero: "",
     folioPago: "",
-    carrera:"",
+    carrera: "",
     numControl: "",
     semestre: "",
     email: "",
     telefono: "",
-    fechaExamen: null, // Agregado
-    horaExamen: null, // Agregado
+    fechaExamen: null,
+    horaExamen: null,
   });
 
   const [emailError, setEmailError] = useState("");
 
-
-
-
-
   const add = () => {
     Axios.post("http://localhost:3307/create", {
-      apellidoPaterno: formValues.apellidoPaterno,
-      apellidoMaterno: formValues.apellidoMaterno,
-      nombres: formValues.nombres,
-      genero: formValues.genero,
-      carrera: formValues.carrera,
-      numControl: formValues.numControl,
-      semestre: formValues.semestre,
-      email: formValues.email,
-      telefono: formValues.telefono,
-      fechaExamen: formValues.fechaExamen,
-      horaExamen: formValues.horaExamen,
-      folioPago : formValues.folioPago,
+      ...formValues,
     })
-    .then((response) => {
-      
-      //
-      // Obtener el ID del examen correspondiente a la fecha y hora seleccionadas
-      Axios.get(`http://localhost:3307/getExamenId?fecha=${formValues.fechaExamen}&hora=${formValues.horaExamen}`)
-        .then((response) => {
-          const examenId = response.data.id_examen;
-  
-          // Insertar datos en la tabla Cita
-          Axios.post("http://localhost:3307/createCita", {
-            numero_control: formValues.numControl, // Cambiado a numero_control
-            id_examen: examenId,
-            fechaExamen: formValues.fechaExamen,
-            horaExamen: formValues.horaExamen,
-            folioPago: formValues.folioPago, // Suponiendo que formValues.folioPago contiene el recibo
-            estatus: 'ACTIVO'
-          })
-          .then(() => {
-            alert("Estudiante registrado y cita agendada");
+      .then((response) => {
+        Axios.get(
+          `http://localhost:3307/getExamenId?fecha=${formValues.fechaExamen}&hora=${formValues.horaExamen}`
+        )
+          .then((response) => {
+            const examenId = response.data.id_examen;
+
+            Axios.post("http://localhost:3307/createCita", {
+              numero_control: formValues.numControl,
+              id_examen: examenId,
+              fechaExamen: formValues.fechaExamen,
+              horaExamen: formValues.horaExamen,
+              folioPago: formValues.folioPago,
+              estatus: "ACTIVO",
+            })
+              .then(() => {
+                alert("Estudiante registrado y cita agendada");
+              })
+              .catch((error) => {
+                alert("Error al agendar cita: " + error);
+              });
           })
           .catch((error) => {
-            alert("Error al agendar cita: " + error);
+            alert("Error al obtener ID de examen: " + error);
           });
-        })
-        .catch((error) => {
-          alert("Error al obtener ID de examen: " + error);
-        });
-    })
-    .catch((error) => {
-      alert("Error al registrar estudiante: " + error);
-    });
+      })
+      .catch((error) => {
+        alert("Error al registrar estudiante: " + error);
+      });
   };
-  
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     let newValue = value;
@@ -94,6 +77,10 @@ const Registro = () => {
       case "semestre":
         newValue = value.replace(/\D/g, "").slice(0, 2);
         break;
+        case "genero":
+      // Si el valor es "Masculino" o "Femenino", conviértelo a "M" o "F"
+      newValue = value.toLowerCase().startsWith("m") ? "M" : "F";
+      break;
       case "telefono":
         newValue = value.replace(/\D/g, "").slice(0, 10);
         break;
@@ -105,21 +92,13 @@ const Registro = () => {
       ...prevState,
       [id]: newValue,
     }));
-    // Actualizar el campo de fecha de examen
-    if (id === "fechaExamen") {
-      newValue = value; // La fecha ya viene en el formato correcto desde el componente MyCalendar
-    }
+  };
 
-    // Actualizar el campo de hora de examen
-    if (id === "horaExamen") {
-      newValue = value; // La hora viene directamente del componente que muestra las horas disponibles
-    }
-    // Actualizar el campo de género
-    if (id === "genero") {
-      newValue = value.slice(0, 1).toUpperCase(); // Convertir a mayúscula y obtener la primera letra
-    }
-
-    
+  const handleTimeChange = (time) => {
+    setFormValues((prevState) => ({
+      ...prevState,
+      horaExamen: time,
+    }));
   };
 
   const handleEmailBlur = (e) => {
@@ -135,8 +114,11 @@ const Registro = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Submit logic here
     console.log(formValues);
+    const formData = {
+      ...formValues,
+      genero: formValues.genero.toLowerCase().startsWith("m") ? "M" : "F",
+    };
   };
 
   return (
@@ -146,10 +128,7 @@ const Registro = () => {
           <Card.Body>
             <h2 className="text-center mb-4">Registro de examen</h2>
             <Form onSubmit={handleSubmit}>
-
-
- {/* Fecha de examen */}
- <h5>Fecha de examen</h5>
+              <h5>Fecha de examen</h5>
               <Row>
                 <Col md={6}>
                   <Form.Group controlId="fechaExamen">
@@ -162,16 +141,12 @@ const Registro = () => {
                           fechaExamen: date,
                         }))
                       }
+                      onTimeChange={handleTimeChange}
                     />
                   </Form.Group>
                 </Col>
               </Row>
 
-
-
-
-
-              {/* Información personal */}
               <h5>Información personal</h5>
               <Row>
                 <Col md={6}>
@@ -240,7 +215,6 @@ const Registro = () => {
                 </Col>
               </Row>
 
-              {/* Información académica */}
               <h5>Información académica</h5>
               <Row>
                 <Col md={6}>
@@ -317,9 +291,7 @@ const Registro = () => {
                   </Form.Group>
                 </Col>
               </Row>
-             
 
-              {/* Información de contacto */}
               <h5>Información de contacto</h5>
               <Row>
                 <Col md={6}>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Container, Card, Form } from "react-bootstrap";
 import CalendarioAdmin from "./CalendarioAdmin";
 import "./RegistroExamen.css";
+import axios from "axios";
 
 const RegistroExamen = () => {
   const [formValues, setFormValues] = useState({
@@ -18,11 +19,21 @@ const RegistroExamen = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Formulario enviado: ", formValues);
-
-    // Aquí puedes implementar la lógica para enviar los datos a la base de datos
+  
+    // Aquí puedes enviar los datos al backend utilizando Axios
+    try {
+      const response = await axios.post('http://localhost:3307/createExamen', {
+        fechaExamen: formValues.fechaExamen,
+        horaExamen: formValues.horaExamen,
+        cupoMaximo: formValues.cupoMaximo
+      });
+      console.log(response.data); // Mensaje de éxito o error desde el backend
+    } catch (error) {
+      console.error('Error al enviar los datos al backend:', error);
+    }
   };
 
   return (

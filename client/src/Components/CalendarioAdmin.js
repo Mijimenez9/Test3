@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './CalendarioAdminStyles.css';
+import { format } from 'date-fns';
 
 const CalendarioAdmin = ({ onDateChange, selectedDate }) => {
   const [availableTimes, setAvailableTimes] = useState([]);
@@ -13,7 +14,8 @@ const CalendarioAdmin = ({ onDateChange, selectedDate }) => {
 
   const handleDateChange = (date) => {
     if (onDateChange) {
-      onDateChange(date); // Llamar a la función proporcionada para manejar el cambio de fecha
+      const formattedDate = format(date, 'yyyy-MM-dd'); // Formatear la fecha
+      onDateChange(formattedDate); // Llamar a la función proporcionada para manejar el cambio de fecha con la fecha formateada
     }
   };
 
@@ -32,7 +34,7 @@ const CalendarioAdmin = ({ onDateChange, selectedDate }) => {
   };
 
   return (
-    <div style={{ display: "block" ,margin:'0 auto' }}>
+    <div style={{ display: "block", margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
         <h2>Calendario</h2>
         <DatePicker
@@ -57,8 +59,6 @@ const CalendarioAdmin = ({ onDateChange, selectedDate }) => {
           `}
         </style>
       </div>
-      
-      
     </div>
   );
 };
