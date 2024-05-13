@@ -33,8 +33,8 @@ app.post("/create", (req, res) => {
   app.post("/createCita", (req, res) => {
     const { id_estudiante, id_examen, fechaExamen, horaExamen, folioPago } = req.body;
   
-    db.query('INSERT INTO Cita(numero_control, id_examen, fechaExamen, horaExamen, folioPago, estatus) VALUES (?, ?, ?, ?, ?, ?)',
-      [id_estudiante, id_examen, fechaExamen, horaExamen, folioPago, 'ACTIVO'], // Suponiendo que el estatus siempre es 'ACTIVO' al crear una cita
+    db.query('INSERT INTO Cita(folioPago, id_examen, fechaExamen, horaExamen,  estatus) VALUES (?, ?, ?, ?, ?)',
+      [folioPago, id_examen, fechaExamen, horaExamen,  'ACTIVO'], // Suponiendo que el estatus siempre es 'ACTIVO' al crear una cita
       (err, result) => {
         if (err) {
           console.error("Error al registrar cita:", err);

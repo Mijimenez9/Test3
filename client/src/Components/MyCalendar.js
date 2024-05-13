@@ -1,3 +1,4 @@
+// MyCalendar.js
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import DatePicker from "react-datepicker";
@@ -28,7 +29,7 @@ const MyCalendar = ({ onDateChange, selectedDate, onTimeChange }) => {
         console.log("selectedDate es:", selectedDate);
         if (selectedDate instanceof Date && !isNaN(selectedDate.getTime())) {
           console.log("Entra al if");
-          const formattedDate = selectedDate.toLocaleDateString('en-CA'); // Formatea la fecha con el formato deseado
+          const formattedDate = selectedDate.toISOString().split('T')[0]; // Formatea la fecha en formato yyyy-mm-dd
           console.log("La fecha seleccionada desde useEffect formateada es " + formattedDate);
           const timesResponse = await Axios.get("http://localhost:3307/examTimes?date=" + formattedDate);
           setAvailableTimes(timesResponse.data);
@@ -46,6 +47,7 @@ const MyCalendar = ({ onDateChange, selectedDate, onTimeChange }) => {
 
   const handleDateChange = (date) => {
     if (onDateChange) {
+      console.log("Fecha seleccionada desde handlechange:", date); // Agrega un console.log para verificar la fecha seleccionada
       onDateChange(date);
     }
   };
@@ -72,20 +74,9 @@ const MyCalendar = ({ onDateChange, selectedDate, onTimeChange }) => {
           )
         }
       />
-  <style>
-          {`
-            .react-datepicker-wrapper input {
-              display: none;
-            }
-            .react-datepicker {
-              width: 300%;
-              display: flex;
-              right:60px;
-            }
-          `}
-        </style>
-      <div >
-        <select onChange={handleTimeChange} style={{ marginTop:'350px', top:'-500px'}} >
+
+      <div>
+        <select onChange={handleTimeChange}>
           <option value="">Selecciona una hora</option>
           {availableTimes.map((time, index) => (
             <option key={index} value={time}>

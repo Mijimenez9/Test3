@@ -1,3 +1,4 @@
+// Registro.js
 import React, { useState } from "react";
 import Axios from "axios";
 import { Container, Card, Form, Button, Row, Col } from "react-bootstrap";
@@ -14,7 +15,6 @@ const Registro = () => {
     folioPago: "",
     carrera: "",
     numControl: "",
-    
     email: "",
     telefono: "",
     fechaExamen: null,
@@ -24,12 +24,15 @@ const Registro = () => {
   const [emailError, setEmailError] = useState("");
 
   const add = () => {
+    const formattedDate = formValues.fechaExamen.toISOString().split('T')[0];
+  
     Axios.post("http://localhost:3307/create", {
       ...formValues,
+      fechaExamen: formattedDate, // Envía la fecha formateada
     })
       .then((response) => {
         Axios.get(
-          `http://localhost:3307/getExamenId?fecha=${formValues.fechaExamen}&hora=${formValues.horaExamen}`
+          `http://localhost:3307/getExamenId?fecha=${formattedDate}&hora=${formValues.horaExamen}`
         )
           .then((response) => {
             const examenId = response.data.id_examen;
@@ -37,7 +40,7 @@ const Registro = () => {
             Axios.post("http://localhost:3307/createCita", {
               numero_control: formValues.numControl,
               id_examen: examenId,
-              fechaExamen: formValues.fechaExamen,
+              fechaExamen: formattedDate, // Envía la fecha formateada
               horaExamen: formValues.horaExamen,
               folioPago: formValues.folioPago,
               estatus: "ACTIVO",
@@ -77,10 +80,9 @@ const Registro = () => {
       case "semestre":
         newValue = value.replace(/\D/g, "").slice(0, 2);
         break;
-        case "genero":
-      // Si el valor es "Masculino" o "Femenino", conviértelo a "M" o "F"
-      newValue = value.toLowerCase().startsWith("m") ? "M" : "F";
-      break;
+      case "genero":
+        newValue = value.toLowerCase().startsWith("m") ? "M" : "F";
+        break;
       case "telefono":
         newValue = value.replace(/\D/g, "").slice(0, 10);
         break;
@@ -121,6 +123,13 @@ const Registro = () => {
     };
   };
 
+  const handleDateChange = (date) => {
+    setFormValues((prevState) => ({
+      ...prevState,
+      fechaExamen: date,
+    }));
+  };
+
   return (
     <>
       <Container className="my-5">
@@ -134,18 +143,10 @@ const Registro = () => {
                   <Form.Group controlId="fechaExamen">
                     <Form.Label>Fecha de Examen:</Form.Label>
                     <MyCalendar
-                  
                       selectedDate={formValues.fechaExamen}
-                      onDateChange={(date) =>
-                        setFormValues((prevState) => ({
-                          ...prevState,
-                          fechaExamen: date,
-                        }))
-                      }
+                      onDateChange={handleDateChange}
                       onTimeChange={handleTimeChange}
                     />
-                   
-       
                   </Form.Group>
                 </Col>
               </Row>
@@ -280,8 +281,6 @@ const Registro = () => {
                   </Form.Group>
                 </Col>
               </Row>
-
-              
 
               <h5>Información de contacto</h5>
               <Row>
