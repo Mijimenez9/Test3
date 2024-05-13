@@ -165,6 +165,26 @@ app.post("/updateEstudiante", (req, res) => {
   );
 });
 
+
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+
+  db.query('SELECT * FROM Administrador WHERE email = ? AND password = ?', [email, password], (err, result) => {
+      if (err) {
+          console.error("Error al realizar la consulta:", err);
+          res.status(500).send("Error interno del servidor");
+      } else {
+          if (result.length > 0) {
+              // Si se encuentra el usuario, enviar una respuesta con éxito
+              res.status(200).send("Inicio de sesión exitoso");
+          } else {
+              // Si el usuario o la contraseña son incorrectos, enviar una respuesta de error
+              res.status(401).send("Usuario o contraseña incorrectos");
+          }
+      }
+  });
+});
+
 app.listen(3307,()=>{
     console.log("Corriendo en el puerto 3307")
 
