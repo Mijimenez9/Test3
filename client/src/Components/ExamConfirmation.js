@@ -1,7 +1,19 @@
 import React from 'react';
-import './ExamConfirmation.css'; // Asegúrate de importar el archivo CSS correctamente
+import './ExamConfirmation.css';
 
-function ExamConfirmation() {
+const ExamConfirmation = ({ location }) => {
+    // Verifica si location y location.state están definidos
+    if (!location || !location.state) {
+        // Si no hay datos, redirige a la página de Registro o maneja el caso según tus necesidades
+        return <p>No se han recibido datos del examen</p>;
+    }
+
+    const formValues = location.state; // Recibe los datos enviados desde Registro
+
+    // Obtener la fecha y la hora de formValues
+    const fechaExamen = formValues.fechaExamen ? new Date(formValues.fechaExamen) : null;
+    const horaExamen = formValues.horaExamen;
+
     return (
         <div>
             <main>
@@ -11,12 +23,18 @@ function ExamConfirmation() {
                 <p>Llegar con 15 minutos de anticipación.</p>
                 <h3>Datos de agenda:</h3>
                 <p><strong>Fecha:</strong></p>
-                <p>(Agregar fecha)</p>
+                {/* Mostrar la fecha si está definida */}
+                {fechaExamen && (
+                    <p>{fechaExamen.toLocaleDateString()}</p>
+                )}
                 <p><strong>Hora:</strong></p>
-                <p>(Agregar Hora)</p>
+                {/* Mostrar la hora si está definida */}
+                {horaExamen && (
+                    <p>{horaExamen}</p>
+                )}
                 <h3>Ubicación</h3>
                 <p><strong>Instituto Tecnológico de Tijuana</strong></p>
-                <p >Calzada Del Tecnológico 5/7, Fraccionamiento Tomas Aquino, Tijuana, Baja California. Edificio de sistemas, debajo de laboratorio I.</p>
+                <p>Calzada Del Tecnológico 5/7, Fraccionamiento Tomas Aquino, Tijuana, Baja California. Edificio de sistemas, debajo de laboratorio I.</p>
                 <h3>Documentación Requerida</h3>
                 <p>Recibo de pago, identificación oficial, lápiz, sacapuntas y borrador</p> 
                 <div className="buttons">

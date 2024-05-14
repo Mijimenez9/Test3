@@ -74,9 +74,20 @@ const MyCalendar = ({ onDateChange, selectedDate, onTimeChange }) => {
           )
         }
       />
-
-      <div>
-        <select onChange={handleTimeChange}>
+<style>
+          {`
+            .react-datepicker-wrapper input {
+              display: none;
+            }
+            .react-datepicker {
+              width: 280%;
+              display: flex;
+              right :50px;
+            }
+          `}
+        </style>
+      <div >
+        <select onChange={handleTimeChange} style={{ marginTop: '350px' }}>
           <option value="">Selecciona una hora</option>
           {availableTimes.map((time, index) => (
             <option key={index} value={time}>

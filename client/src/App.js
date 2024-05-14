@@ -19,7 +19,7 @@ function App() {
         <Route path='/Registro' element={<Registro></Registro> }></Route>
         <Route path='/*' element={<Navigate to='/' />}></Route>
         <Route path='/LoginScreen' element={<LoginScreen></LoginScreen> }></Route>
-        <Route path='/Confirmacion' element={<ExamConfirmation></ExamConfirmation> }></Route>
+        <Route path='/ExamConfirmation' element={<ExamConfirmation></ExamConfirmation> }></Route>
         <Route path='/RegistroExamen' element={<RegistroExamen></RegistroExamen>} ></Route>
         
         <Route path='/Consulta' element={<Consulta/>} ></Route>

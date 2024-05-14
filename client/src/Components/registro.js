@@ -1,27 +1,30 @@
-// Registro.js
 import React, { useState } from "react";
 import Axios from "axios";
 import { Container, Card, Form, Button, Row, Col } from "react-bootstrap";
 import "./registro.css";
-
+import { useNavigate } from "react-router-dom";
 import MyCalendar from "./MyCalendar";
 
-const Registro = () => {
-  const [formValues, setFormValues] = useState({
-    apellidoPaterno: "",
-    apellidoMaterno: "",
-    nombres: "",
-    genero: "",
-    folioPago: "",
-    carrera: "",
-    numControl: "",
-    email: "",
-    telefono: "",
-    fechaExamen: null,
-    horaExamen: null,
-  });
+const initialState = {
+  apellidoPaterno: "",
+  apellidoMaterno: "",
+  nombres: "",
+  genero: "",
+  folioPago: "",
+  carrera: "",
+  numControl: "",
+  email: "",
+  telefono: "",
+  fechaExamen: null,
+  horaExamen: null,
+};
 
+const Registro = () => {
+  const [formValues, setFormValues] = useState(initialState);
   const [emailError, setEmailError] = useState("");
+  const [dateTimeSelected, setDateTimeSelected] = useState(false);
+  const navigate = useNavigate(); // Obtener la función de navegación
+
 
   const add = () => {
     const formattedDate = formValues.fechaExamen.toISOString().split('T')[0];
@@ -46,7 +49,12 @@ const Registro = () => {
               estatus: "ACTIVO",
             })
               .then(() => {
+                console.log("los valores son ",formValues); // Asegúrate de que formValues tenga los datos correctos antes de navegar
+
                 alert("Estudiante registrado y cita agendada");
+                setFormValues(initialState); // Reinicia el estado del formulario
+                setDateTimeSelected(false); // Reinicia el estado de selección de fecha y hora
+               
               })
               .catch((error) => {
                 alert("Error al agendar cita: " + error);
@@ -60,7 +68,6 @@ const Registro = () => {
         alert("Error al registrar estudiante: " + error);
       });
   };
-
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     let newValue = value;
@@ -101,6 +108,7 @@ const Registro = () => {
       ...prevState,
       horaExamen: time,
     }));
+    setDateTimeSelected(true);
   };
 
   const handleEmailBlur = (e) => {
@@ -121,6 +129,7 @@ const Registro = () => {
       ...formValues,
       genero: formValues.genero.toLowerCase().startsWith("m") ? "M" : "F",
     };
+    //navigate("/ExamConfirmation", { state: formValues });
   };
 
   const handleDateChange = (date) => {
@@ -128,8 +137,8 @@ const Registro = () => {
       ...prevState,
       fechaExamen: date,
     }));
+    setDateTimeSelected(true);
   };
-
   return (
     <>
       <Container className="my-5">
@@ -161,6 +170,7 @@ const Registro = () => {
                       placeholder="Apellido Paterno"
                       value={formValues.apellidoPaterno}
                       onChange={handleInputChange}
+                      disabled={!dateTimeSelected}
                     />
                   </Form.Group>
                 </Col>
@@ -172,6 +182,7 @@ const Registro = () => {
                       placeholder="Apellido Materno"
                       value={formValues.apellidoMaterno}
                       onChange={handleInputChange}
+                      disabled={!dateTimeSelected}
                     />
                   </Form.Group>
                 </Col>
@@ -186,6 +197,7 @@ const Registro = () => {
                       placeholder="Nombres"
                       value={formValues.nombres}
                       onChange={handleInputChange}
+                      disabled={!dateTimeSelected}
                     />
                   </Form.Group>
                 </Col>
@@ -196,6 +208,7 @@ const Registro = () => {
                       as="select"
                       value={formValues.genero}
                       onChange={handleInputChange}
+                      disabled={!dateTimeSelected}
                     >
                       <option value="">Selecciona</option>
                       <option value="masculino">Masculino</option>
@@ -214,6 +227,7 @@ const Registro = () => {
                       placeholder="Folio de Pago"
                       value={formValues.folioPago}
                       onChange={handleInputChange}
+                      disabled={!dateTimeSelected}
                     />
                   </Form.Group>
                 </Col>
@@ -228,6 +242,7 @@ const Registro = () => {
                       as="select"
                       value={formValues.carrera}
                       onChange={handleInputChange}
+                      disabled={!dateTimeSelected}
                     >
                       <option value="">Selecciona</option>
                       <option value="Arquitectura">Arquitectura</option>
@@ -277,6 +292,7 @@ const Registro = () => {
                       placeholder="Número de Control"
                       value={formValues.numControl}
                       onChange={handleInputChange}
+                      disabled={!dateTimeSelected}
                     />
                   </Form.Group>
                 </Col>
@@ -294,6 +310,7 @@ const Registro = () => {
                       onBlur={handleEmailBlur}
                       onChange={handleInputChange}
                       isInvalid={!!emailError}
+                      disabled={!dateTimeSelected}
                     />
                     <Form.Control.Feedback type="invalid">
                       {emailError}
@@ -308,13 +325,14 @@ const Registro = () => {
                       placeholder="Número Telefónico"
                       value={formValues.telefono}
                       onChange={handleInputChange}
+                      disabled={!dateTimeSelected}
                     />
                   </Form.Group>
                 </Col>
               </Row>
 
               <div className="text-center mt-4">
-                <Button variant="primary" type="submit" onClick={add}>
+                <Button variant="primary" type="submit" onClick={add} disabled={!dateTimeSelected}>
                   Enviar
                 </Button>
               </div>
