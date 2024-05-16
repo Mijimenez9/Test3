@@ -2,18 +2,27 @@ const express = require("express");
 const app= express();
 const mysql= require("mysql");
 const cors= require("cors");
+const mysql = require('mysql2');
 
 
 app.use(cors());
 app.use(express.json());
-const db = mysql.createConnection({
-    host:"localhost",
-   
-    user:"root",
-    password:"@Osc4r4rz4t3",
-    database:"sistemas_lenguas_extranjeras"
-   
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
 });
+
+// Conectar a la base de datos
+connection.connect(error => {
+  if (error) {
+    console.error('Error conectando a la base de datos:', error.stack);
+    return;
+  }
+  console.log('Conectado a la base de datos como id', connection.threadId);
+});
+
 
 app.post("/create", (req, res) => {
     const { folioPago,nombres, apellidoMaterno, apellidoPaterno, numControl, carrera, genero, email, telefono, fechaExamen, horaExamen } = req.body;
